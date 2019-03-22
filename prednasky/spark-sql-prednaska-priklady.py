@@ -105,7 +105,7 @@ teplotyDF3 = sqlContext.read \
 	.option("inferSchema", "true") \
 	.load("/user/pascepet/data/teplota")
 
-teplotyDF3 = teplotyDF3.filter((teploty_DF3.mesic>5) & (teplotyDF3.mesic<9)) \
+teplotyDF3 = teplotyDF3.filter((teplotyDF3.mesic>5) & (teplotyDF3.mesic<9)) \
     .select('stat','teplota').na.drop()
 teplotyDF3 = teplotyDF3.withColumn('teplota', (teplotyDF3.teplota/10.0 - 32) * 5/9)
 teplotyDF3 = teplotyDF3.groupBy('stat').avg() \
