@@ -11,3 +11,4 @@ Big Data Application in Data Science - subject taught at MFF UK
 * [Apache Spark manual](https://spark.apache.org/docs/1.6.0/)
 * [PySpark SQL manual](http://spark.apache.org/docs/1.6.0/api/python/pyspark.sql.html)
 * [CSV files import/export](https://github.com/databricks/spark-csv)
+* [Power Iteration Clustering paper](https://www.cs.cmu.edu/~wcohen/postscript/icml2010-pic-final.pdf)
