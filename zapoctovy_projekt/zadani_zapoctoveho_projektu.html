@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Dominik Matula, 4. 4. 2019" />
+<meta name="author" content="Dominik Matula, 23. 4. 2019" />
 
 
 <title>Zadání zápočtového projektu NDBI047 Predikce hodnocení filmů</title>
@@ -1610,7 +1610,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore"><small>Zadání zápočtového projektu NDBI047</small><br />Predikce hodnocení filmů</h1>
-<h4 class="author">Dominik Matula, 4. 4. 2019</h4>
+<h4 class="author">Dominik Matula, 23. 4. 2019</h4>
 
 </div>
 
@@ -1909,7 +1909,7 @@ b_f^* &amp;= \frac{1}{|U_f| + \beta_f}\cdot\sum_{u\in U_f}(r_{u,f} - b_u - \bar{
 <div id="user-user-collaborative-filtering" class="section level3">
 <h3>User-User Collaborative filtering</h3>
 <blockquote>
-<p><span class="nedulezite">základ: 8 b.<br>bonus: 3 b.</span></p>
+<p><span class="nedulezite">základ: 9 b.<br>bonus: 3 b.</span></p>
 </blockquote>
 <ul>
 <li><strong>Myšlenka</strong>: Najděme <span class="math inline">\(k\)</span> uživatelů, kteří hodnotí filmy podobně jako uživatel <span class="math inline">\(u\)</span>. Hledanou predikcí <span class="math inline">\(p_{u,f}\)</span> pak bude <span class="nedulezite">(vážený)</span> průměr hodnocení filmu <span class="math inline">\(f\)</span> těmito uživateli.</li>
@@ -2089,7 +2089,7 @@ b_f^* &amp;= \frac{1}{|U_f| + \beta_f}\cdot\sum_{u\in U_f}(r_{u,f} - b_u - \bar{
 <div id="content-based-models" class="section level3">
 <h3>Content-based models</h3>
 <blockquote>
-<p><span class="nedulezite">základ: 7 b.<br>bonus: 2 b.</span></p>
+<p><span class="nedulezite">základ: 5 b.<br>bonus: 2 b.</span></p>
 </blockquote>
 <ul>
 <li>V této části projektu se zaměříme na modelování hodnocení uživatelů na základě vlastností filmů. Tím se tato metoda liší od <code>item-item collaborative filtering</code>, jíž jsme uvažovali výše.
@@ -2155,7 +2155,7 @@ b_f^* &amp;= \frac{1}{|U_f| + \beta_f}\cdot\sum_{u\in U_f}(r_{u,f} - b_u - \bar{
 <div id="redukce-dimenze" class="section level3">
 <h3>Redukce dimenze</h3>
 <blockquote>
-<p><span class="nedulezite">základ: 5 b.<br>bonus: 5 b.</span></p>
+<p><span class="nedulezite">základ: 6 b.<br>bonus: 5 b.</span></p>
 </blockquote>
 <ul>
 <li>Jde o velmi zajímavou metodu, nicméně pro naše data není patrně úplně vhodná (viz otázky v úvodní kapitole). Uvidíme.</li>
@@ -2235,12 +2235,61 @@ b_f^* &amp;= \frac{1}{|U_f| + \beta_f}\cdot\sum_{u\in U_f}(r_{u,f} - b_u - \bar{
 <blockquote>
 <p><span class="nedulezite">základ: 5 b.<br>bonus: 3 b.</span></p>
 </blockquote>
+<div id="myslenka" class="section level2">
+<h2>Myšlenka</h2>
+<p>Na přednášce jsme popsali účel clusterování – sdružit podobné (blízké) jednotky do stejných celků. Budeme se tedy snažit vytvářet shluky filmů a jejich podobnost budeme popisovat různými způsoby.</p>
+</div>
+<div id="podobnosti-filmu" class="section level2 tabset tabset_pills">
+<h2>Podobnosti filmů</h2>
+<p>Podobnostní metriku lze založit například na těchto datech:</p>
 <ul>
-<li><span class="dulezite"> [bude doplněno] </span>
-<ul>
-<li>(Na přednášce se budeme tomuto tématu věnovat 12. 4.; tato část zadání bude patrně doplněna k tomuto datu).</li>
-</ul></li>
+<li>žánry, do nichž film spadá (soubor movies.csv, sloupec genres)</li>
+<li>tagy uvedené u filmů (soubory genome-tags.csv, genome-scores.csv a tags_TRAIN_02p.csv)</li>
+<li>uživatelské hodnocení (ratingy) filmů</li>
 </ul>
+<p><strong>V projektu použijeme data za žánry a u tagů soubory genome-scores a genome-tags.</strong></p>
+<div id="tagy-v-genome-souborech" class="section level3">
+<h3>Tagy v genome souborech</h3>
+<p>Soubor se skóre obsahuje jeden řádek pro každou kombinaci filmu (movieId, celkem 13 176 filmů) a tagu (tagId, celkem 1 128 tagů). Kombinaci filmu a tagu je přiřazená hodnota od 0 a 1 vyjadřující relevanci tagu pro film. Celkem lze tedy film reprezentovat 1 128 prvkovým vektorem čísel mezi 0 a 1.</p>
+<p>Protože většina hodnot relevance je nízkých, má smysl hodnoty pod určitou hranicí zanedbat (prohlásit za nulové) a hodnoty nad hranicí přeškálovat. Jiná možnost je vyjádřit relevanci jako binární proměnnou (pod určitou hranicí nula, od hranice výš jednička).</p>
+<p>Vhodnou metrikou pro podobnost (vzdálenost) filmů může být euklidovská metrika (L1, L2), kosinová podobnost nebo (vážená) Jaccardova podobnost – viz přednášku.</p>
+</div>
+<div id="zanry" class="section level3">
+<h3>Žánry</h3>
+<p>Sloupec genres obsahuje množinu standardních názvů žánrů oddělených znakem ‚|‘. Některé filmy mají uvedený text ‚(no genres listed)‘, tyto filmy je vhodné vyřadit. Příslušnost filmu k žánrům lze reprezentovat nula-jedničkovým vektorem, jehož jednotlivé prvky odpovídají jednotlivým žánrům a jednička znamená uvedení příslušného žánru u filmu.</p>
+<p>Vhodnou metrikou pro podobnost je cosinová nebo Jaccardova podobnost.</p>
+</div>
+<div id="poznamka" class="section level3">
+<h3>Poznámka</h3>
+<p>Výpočetně jednodušší je cosinová podobnost, protože ji lze získat jako součin dvou matic, přičemž obě tyto matice se získají snadnou transformací původní matice filmy-tagy nebo filmy-žánry.</p>
+</div>
+<div id="clusterovaci-metody" class="section level3">
+<h3>Clusterovací metody</h3>
+<p><strong>Pro clustering filmů podle tagů</strong> vyzkoušejte metody implementované ve Spark ML:</p>
+<ul>
+<li>KMeans</li>
+<li>Power Iteration Clustering</li>
+</ul>
+<p>Podle vlastního uvážení použijte metriku nad původními nebo nějak modifikovanými hodnotami relevance (viz výše).</p>
+<p>U KMeans vyzkoušejte různé počty clusterů od 1 do 30 a odhadněte vhodný počet clusterů podle součtu čtverců vnitroclusterových odchylek. U Power Iteration začněte s malými počty clusterů. Podívejte se na složení jednotlivých clusterů a zjistěte, zda se v clusterech skutečně scházejí podobné filmy, resp. zda lze některé clustery srozumitelně interpretovat (např. animáky pro děti, krvavé horrory atd.)</p>
+<p><strong>Pro clustering filmů podle žánrů</strong> využijte metodu Power Iteration Clustering pro nízké hodnoty počtu clusterů. Posuďte, zda dává větší smysl clustering filmů touto metodou podle žánrů nebo podle tagů.</p>
+</div>
+</div>
+<div id="clusterovani-tagu" class="section level2">
+<h2>Clusterování tagů</h2>
+<p>Tagy můžeme vnímat jako slova a film jako dokument složený ze slov. Relevance tagu pro film pak můžeme interpretovat jako zastoupení (četnost) slova v dokumentu. Můžeme se pak ptát, zda existují nějaké typické kombinace tagů definující témata (topics), k nimž lze jednotlivé filmy následně přiřadit. Z dat souboru genome-scores.csv lze vytvořit matici, kde každý řádek bude jeden film a každý sloupec jeden tag, na průsečíků budou hodnoty relevance (původní nebo modifikované).</p>
+<p>Některé tagy jsou relevantní pro mnoho filmů nebo skoro všechny filmy, je proto vhodné zvážit, zda je nevyřadit (nepřispívají k rozlišení mezi filmy).</p>
+<div id="latent-dirichlet-association" class="section level3">
+<h3>Latent Dirichlet Association</h3>
+<p><strong>Na výše uvedenou matici aplikujte metodu LDA</strong>, definujte předem počet témat a zjistěte, která slova (tagy) jsou nejcharakterističtější pro jednotlivá témata. Vyzkoušejte různé počty témat a zjistěte, zda lze podle charakteristických tagů témata nějak interpretovat.</p>
+<p>Vyberte deset filmů z výše uvedené matice, zjistěte jejich podobnost jednotlivým tématům (např. kosinovou nebo Jaccardovou podobností) a určete nejbližší téma pro každý vybraný film.</p>
+<details>
+<p><summary>BONUS</summary></p>
+<p><strong>Další využití podobnosti</strong></p>
+Spočtené matice podobností lze využít pro content-based modelování. Neznámý rating lze odhadnout pomocí známých ratingů na nejpodobnějších filmech, ať už podle tagů, nebo podle žánrů. Vyzkoušejte tento přístup.
+</details>
+</div>
+</div>
 </div>
 <div id="overfitting-a-schopnost-zobecnovat" class="section level1">
 <h1>Overfitting a schopnost zobecňovat</h1>
